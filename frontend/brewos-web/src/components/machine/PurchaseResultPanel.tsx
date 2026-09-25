@@ -18,13 +18,19 @@ export function PurchaseResultPanel({ result, onDismiss }: PurchaseResultPanelPr
       transition={{ duration: 0.25 }}
       className="border border-emerald-200 bg-emerald-50 px-5 py-4"
       role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      aria-labelledby="purchase-result-heading"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-800">
             Purchase complete
           </p>
-          <h2 className="mt-2 text-xl font-semibold text-stone-900">
+          <h2
+            id="purchase-result-heading"
+            className="mt-2 text-xl font-semibold text-stone-900"
+          >
             Enjoy your {result.coffee.name}
           </h2>
           <p className="mt-1 text-sm text-stone-700">
@@ -34,7 +40,8 @@ export function PurchaseResultPanel({ result, onDismiss }: PurchaseResultPanelPr
         <button
           type="button"
           onClick={onDismiss}
-          className="text-sm font-medium text-emerald-900 underline-offset-2 hover:underline"
+          aria-label="Dismiss purchase success message"
+          className="text-sm font-medium text-emerald-900 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
         >
           Dismiss
         </button>

@@ -12,6 +12,8 @@ export function ErrorBanner({ message, code, onDismiss }: ErrorBannerProps) {
   return (
     <div
       role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
       className="flex items-start justify-between gap-4 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
     >
       <div>
@@ -26,7 +28,8 @@ export function ErrorBanner({ message, code, onDismiss }: ErrorBannerProps) {
         <button
           type="button"
           onClick={onDismiss}
-          className="shrink-0 font-medium text-red-700 underline-offset-2 hover:underline"
+          aria-label="Dismiss error message"
+          className="shrink-0 font-medium text-red-700 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
         >
           Dismiss
         </button>

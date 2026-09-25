@@ -25,7 +25,13 @@ export function AppLayout({ children }: AppLayoutProps) {
           </p>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
+      <main
+        id="main-content"
+        className="mx-auto max-w-5xl px-6 py-8"
+        tabIndex={-1}
+      >
+        {children}
+      </main>
     </div>
   )
 }

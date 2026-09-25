@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState } from 'react'
+import { EmptyState } from '../components/common/EmptyState'
 import { ErrorBanner } from '../components/common/ErrorBanner'
 import { LoadingState } from '../components/common/LoadingState'
 import { BalanceDisplay } from '../components/machine/BalanceDisplay'
@@ -42,9 +43,23 @@ export function MachinePage() {
   const [actionError, setActionError] = useState<UiError | null>(null)
 
   const balanceInCents = statusQuery.data?.balanceInCents ?? 0
-  const isBusy = insertCoin.isPending || purchaseCoffee.isPending
+  const isInserting = insertCoin.isPending
+  const isPurchasing = purchaseCoffee.isPending
+  const isBusy = isInserting || isPurchasing
+
+  const loadError =
+    coffeesQuery.error || statusQuery.error
+      ? toUiError(coffeesQuery.error ?? statusQuery.error)
+      : null
+
+  const displayedError = actionError ?? loadError
+  const coffees = coffeesQuery.data ?? []
 
   const handleInsertCoin = (valueInCents: CoinDenomination) => {
+    if (isBusy) {
+      return
+    }
+
     setActionError(null)
     setLastPurchase(null)
     insertCoin.mutate(valueInCents, {
@@ -52,12 +67,23 @@ export function MachinePage() {
     })
   }
 
-  const handlePurchase = () => {
-    if (!selectedCoffeeId) {
+  const handleSelectCoffee = (coffeeId: string) => {
+    if (isBusy) {
       return
     }
 
     setActionError(null)
+    setLastPurchase(null)
+    setSelectedCoffeeId(coffeeId)
+  }
+
+  const handlePurchase = () => {
+    if (!selectedCoffeeId || isBusy) {
+      return
+    }
+
+    setActionError(null)
+    setLastPurchase(null)
     purchaseCoffee.mutate(selectedCoffeeId, {
       onSuccess: (result) => {
         setLastPurchase(result)
@@ -66,13 +92,6 @@ export function MachinePage() {
       onError: (error) => setActionError(toUiError(error)),
     })
   }
-
-  const loadError =
-    coffeesQuery.error || statusQuery.error
-      ? toUiError(coffeesQuery.error ?? statusQuery.error)
-      : null
-
-  const displayedError = actionError ?? loadError
 
   return (
     <div className="space-y-5">
@@ -89,7 +108,11 @@ export function MachinePage() {
         <ErrorBanner
           message={displayedError.message}
           code={displayedError.code}
-          onDismiss={actionError ? () => setActionError(null) : undefined}
+          onDismiss={
+            actionError
+              ? () => setActionError(null)
+              : undefined
+          }
         />
       ) : null}
 
@@ -103,25 +126,31 @@ export function MachinePage() {
       <BalanceDisplay
         balanceInCents={balanceInCents}
         isLoading={statusQuery.isLoading}
+        isUpdating={isInserting}
       />
 
       <CoinPad
-        disabled={Boolean(loadError)}
-        isPending={insertCoin.isPending}
+        disabled={Boolean(loadError) || isPurchasing}
+        isPending={isInserting}
         onInsert={handleInsertCoin}
       />
 
       {coffeesQuery.isLoading ? (
         <LoadingState label="Loading coffee menu…" />
-      ) : coffeesQuery.data ? (
+      ) : coffees.length > 0 ? (
         <CoffeeMenu
-          coffees={coffeesQuery.data}
+          coffees={coffees}
           balanceInCents={balanceInCents}
           selectedCoffeeId={selectedCoffeeId}
-          disabled={Boolean(loadError) || isBusy}
-          isPurchasing={purchaseCoffee.isPending}
-          onSelect={setSelectedCoffeeId}
+          disabled={Boolean(loadError) || isInserting}
+          isPurchasing={isPurchasing}
+          onSelect={handleSelectCoffee}
           onPurchase={handlePurchase}
+        />
+      ) : !loadError ? (
+        <EmptyState
+          title="No coffees available"
+          description="The machine catalog is empty. Please try again once drinks are configured."
         />
       ) : null}
     </div>
