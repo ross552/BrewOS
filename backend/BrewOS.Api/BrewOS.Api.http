@@ -4,3 +4,31 @@ GET {{BrewOS.Api_HostAddress}}/health
 Accept: application/json
 
 ###
+
+GET {{BrewOS.Api_HostAddress}}/api/coffees
+Accept: application/json
+
+###
+
+GET {{BrewOS.Api_HostAddress}}/api/machine/status
+Accept: application/json
+
+###
+
+POST {{BrewOS.Api_HostAddress}}/api/machine/coins
+Content-Type: application/json
+
+{
+  "valueInCents": 200
+}
+
+###
+
+POST {{BrewOS.Api_HostAddress}}/api/machine/purchase
+Content-Type: application/json
+
+{
+  "coffeeId": "22222222-2222-2222-2222-222222222222"
+}
+
+###
