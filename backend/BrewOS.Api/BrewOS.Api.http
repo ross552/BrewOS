@@ -1,0 +1,6 @@
+@BrewOS.Api_HostAddress = http://localhost:5037
+
+GET {{BrewOS.Api_HostAddress}}/health
+Accept: application/json
+
+###

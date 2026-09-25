@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrewOS.Api", "BrewOS.Api\BrewOS.Api.csproj", "{00C1A446-E992-43C0-B101-83D5BC7E4706}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrewOS.Application", "BrewOS.Application\BrewOS.Application.csproj", "{EC28741F-1DC5-4562-BE9B-97D49E93AFE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrewOS.Domain", "BrewOS.Domain\BrewOS.Domain.csproj", "{283C043A-B708-40C6-995B-1523D4F7E852}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrewOS.Infrastructure", "BrewOS.Infrastructure\BrewOS.Infrastructure.csproj", "{ED8F626A-EA2F-4F2F-B490-B5205088F2CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrewOS.Tests", "BrewOS.Tests\BrewOS.Tests.csproj", "{F48FA670-F933-4F0E-9149-78E1923E1419}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00C1A446-E992-43C0-B101-83D5BC7E4706}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C1A446-E992-43C0-B101-83D5BC7E4706}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C1A446-E992-43C0-B101-83D5BC7E4706}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C1A446-E992-43C0-B101-83D5BC7E4706}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC28741F-1DC5-4562-BE9B-97D49E93AFE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC28741F-1DC5-4562-BE9B-97D49E93AFE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC28741F-1DC5-4562-BE9B-97D49E93AFE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC28741F-1DC5-4562-BE9B-97D49E93AFE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{283C043A-B708-40C6-995B-1523D4F7E852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{283C043A-B708-40C6-995B-1523D4F7E852}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{283C043A-B708-40C6-995B-1523D4F7E852}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{283C043A-B708-40C6-995B-1523D4F7E852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED8F626A-EA2F-4F2F-B490-B5205088F2CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED8F626A-EA2F-4F2F-B490-B5205088F2CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED8F626A-EA2F-4F2F-B490-B5205088F2CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED8F626A-EA2F-4F2F-B490-B5205088F2CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F48FA670-F933-4F0E-9149-78E1923E1419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F48FA670-F933-4F0E-9149-78E1923E1419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F48FA670-F933-4F0E-9149-78E1923E1419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F48FA670-F933-4F0E-9149-78E1923E1419}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
