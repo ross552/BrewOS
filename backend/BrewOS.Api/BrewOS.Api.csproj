@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BrewOS.Application\BrewOS.Application.csproj" />
-    <ProjectReference Include="..\BrewOS.Infrastructure\BrewOS.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

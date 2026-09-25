@@ -10,6 +10,14 @@ The project focuses on maintainable architecture, separation of concerns, testab
 
 ---
 
+# Repository
+
+Source code:
+
+https://github.com/ross552/BrewOS
+
+---
+
 # Features
 
 - Coffee menu with multiple drink options
@@ -40,8 +48,7 @@ The project focuses on maintainable architecture, separation of concerns, testab
                   Application Use Cases
                             |
                        Domain Layer
-                            |
-                  Infrastructure Layer
+                            
 ```
 
 ---
@@ -57,7 +64,6 @@ The backend follows Clean Architecture principles.
 | Domain | Core business rules, entities, value objects, and domain services |
 | Application | Use cases, DTOs, orchestration, and business workflows |
 | API | Controllers, dependency injection, middleware, Swagger, and CORS |
-| Infrastructure | External integrations and persistence abstractions. Currently scaffolded because the assessment uses in-memory state. |
 | Tests | Automated verification of domain, application, and API behavior |
 
 ---
@@ -117,13 +123,11 @@ BrewOS/
 │   ├── BrewOS.Api/
 │   ├── BrewOS.Application/
 │   ├── BrewOS.Domain/
-│   ├── BrewOS.Infrastructure/
 │   └── BrewOS.Tests/
 │
 ├── frontend/
 │   └── brewos-web/
 │
-├── docker-compose.yml
 └── README.md
 ```
 
@@ -416,13 +420,13 @@ The goal is to ensure business behavior remains reliable independently from deli
 
 ## Clean Architecture
 
-Business logic is isolated from HTTP and infrastructure concerns.
+Business logic is isolated from HTTP concerns and external dependencies.
 
 Benefits:
 
 - Domain logic can be tested independently
 - Controllers remain lightweight
-- Infrastructure changes do not affect business rules
+- External dependency changes do not affect business rules
 
 ---
 
@@ -462,7 +466,7 @@ The application follows common API security practices:
 - Dependency injection for controlled service composition
 - CORS configured explicitly for frontend access
 
-Future production enhancements would include authentication, authorization, rate limiting, and audit logging.
+Future production enhancements would include authentication, rate limiting, and audit logging.
 
 ---
 
@@ -474,7 +478,7 @@ Current limitations:
 
 - Machine state is stored in memory
 - No authentication system
-- No database persistence enabled
+- No external persistence layer
 - Single machine instance per API process
 
 ---
@@ -483,13 +487,11 @@ Current limitations:
 
 Possible production extensions:
 
-- PostgreSQL persistence
+- Persistent storage for machine state
 - Transaction history
 - User accounts
 - Distributed locking for concurrent purchases
-- Event-driven transaction processing
 - Automated frontend testing with Playwright
-- Docker production deployment
 - Monitoring and observability integration
 
 ---
@@ -536,4 +538,4 @@ BrewOS demonstrates a production-style full-stack implementation using:
 - Centralized error handling
 - Maintainable frontend architecture
 
-The implementation keeps business rules isolated, APIs clean, and the application ready for future expansion.
+The implementation keeps business rules isolated, APIs clean, and the application structured for future enhancements.
