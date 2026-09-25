@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useState } from 'react'
 import { ErrorBanner } from '../components/common/ErrorBanner'
 import { LoadingState } from '../components/common/LoadingState'
@@ -9,8 +10,23 @@ import { useCoffees } from '../hooks/useCoffees'
 import { useInsertCoin } from '../hooks/useInsertCoin'
 import { useMachineStatus } from '../hooks/useMachineStatus'
 import { usePurchaseCoffee } from '../hooks/usePurchaseCoffee'
-import { getErrorMessage } from '../lib/format'
+import { getErrorMessage, parseApiErrorResponse } from '../lib/apiError'
 import type { CoinDenomination, PurchaseResult } from '../types/coffeeMachine'
+
+interface UiError {
+  message: string
+  code?: string
+}
+
+function toUiError(error: unknown): UiError {
+  const message = getErrorMessage(error)
+  if (axios.isAxiosError(error)) {
+    const apiError = parseApiErrorResponse(error.response?.data)
+    return { message, code: apiError?.code }
+  }
+
+  return { message }
+}
 
 /**
  * Main coffee machine workflow page.
@@ -23,7 +39,7 @@ export function MachinePage() {
 
   const [selectedCoffeeId, setSelectedCoffeeId] = useState<string | null>(null)
   const [lastPurchase, setLastPurchase] = useState<PurchaseResult | null>(null)
-  const [actionError, setActionError] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<UiError | null>(null)
 
   const balanceInCents = statusQuery.data?.balanceInCents ?? 0
   const isBusy = insertCoin.isPending || purchaseCoffee.isPending
@@ -32,7 +48,7 @@ export function MachinePage() {
     setActionError(null)
     setLastPurchase(null)
     insertCoin.mutate(valueInCents, {
-      onError: (error) => setActionError(getErrorMessage(error)),
+      onError: (error) => setActionError(toUiError(error)),
     })
   }
 
@@ -47,14 +63,16 @@ export function MachinePage() {
         setLastPurchase(result)
         setSelectedCoffeeId(null)
       },
-      onError: (error) => setActionError(getErrorMessage(error)),
+      onError: (error) => setActionError(toUiError(error)),
     })
   }
 
   const loadError =
     coffeesQuery.error || statusQuery.error
-      ? getErrorMessage(coffeesQuery.error ?? statusQuery.error)
+      ? toUiError(coffeesQuery.error ?? statusQuery.error)
       : null
+
+  const displayedError = actionError ?? loadError
 
   return (
     <div className="space-y-5">
@@ -67,12 +85,13 @@ export function MachinePage() {
         </p>
       </div>
 
-      {(loadError || actionError) && (
+      {displayedError ? (
         <ErrorBanner
-          message={actionError ?? loadError!}
+          message={displayedError.message}
+          code={displayedError.code}
           onDismiss={actionError ? () => setActionError(null) : undefined}
         />
-      )}
+      ) : null}
 
       {lastPurchase ? (
         <PurchaseResultPanel
