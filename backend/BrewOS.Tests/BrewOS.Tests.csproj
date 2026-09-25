@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BrewOS.Domain\BrewOS.Domain.csproj" />
     <ProjectReference Include="..\BrewOS.Application\BrewOS.Application.csproj" />
+    <ProjectReference Include="..\BrewOS.Api\BrewOS.Api.csproj" />
   </ItemGroup>
 
 </Project>
