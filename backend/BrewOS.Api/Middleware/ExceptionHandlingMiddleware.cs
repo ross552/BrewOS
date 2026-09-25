@@ -1,12 +1,13 @@
 using System.Net;
 using System.Text.Json;
+using BrewOS.Api.Contracts;
 using BrewOS.Domain.Exceptions;
 
 namespace BrewOS.Api.Middleware;
 
 /// <summary>
-/// Global exception handling middleware that maps domain and application failures
-/// to consistent HTTP problem responses.
+/// Global exception handling middleware that catches unhandled exceptions,
+/// logs them, and returns a consistent <see cref="ApiErrorResponse"/> JSON body.
 /// </summary>
 public sealed class ExceptionHandlingMiddleware
 {
@@ -28,7 +29,7 @@ public sealed class ExceptionHandlingMiddleware
     }
 
     /// <summary>
-    /// Invokes the next middleware and translates known exceptions into HTTP responses.
+    /// Invokes the next middleware and translates exceptions into HTTP JSON responses.
     /// </summary>
     public async Task InvokeAsync(HttpContext context)
     {
@@ -44,46 +45,64 @@ public sealed class ExceptionHandlingMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var (statusCode, title) = exception switch
-        {
-            KeyNotFoundException => (HttpStatusCode.NotFound, "Resource not found"),
-            InsufficientBalanceException => (HttpStatusCode.BadRequest, "Insufficient balance"),
-            ArgumentException => (HttpStatusCode.BadRequest, "Invalid request"),
-            _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred")
-        };
+        var (statusCode, error) = MapException(exception);
 
         if (statusCode == HttpStatusCode.InternalServerError)
         {
-            _logger.LogError(exception, "Unhandled exception for {Method} {Path}", context.Request.Method, context.Request.Path);
+            _logger.LogError(
+                exception,
+                "Unhandled exception for {Method} {Path}",
+                context.Request.Method,
+                context.Request.Path);
         }
         else
         {
-            _logger.LogWarning(exception, "Handled exception for {Method} {Path}: {Message}", context.Request.Method, context.Request.Path, exception.Message);
+            _logger.LogWarning(
+                exception,
+                "Handled exception for {Method} {Path}: {Message}",
+                context.Request.Method,
+                context.Request.Path,
+                exception.Message);
         }
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
 
-        object payload = exception switch
-        {
-            InsufficientBalanceException insufficient => new
-            {
-                title,
-                status = (int)statusCode,
-                detail = insufficient.Message,
-                balanceInCents = insufficient.BalanceInCents,
-                requiredAmountInCents = insufficient.RequiredAmountInCents
-            },
-            _ => new
-            {
-                title,
-                status = (int)statusCode,
-                detail = statusCode == HttpStatusCode.InternalServerError
-                    ? "An unexpected error occurred."
-                    : exception.Message
-            }
-        };
+        await context.Response.WriteAsync(JsonSerializer.Serialize(error, JsonOptions));
+    }
 
-        await context.Response.WriteAsync(JsonSerializer.Serialize(payload, JsonOptions));
+    private static (HttpStatusCode StatusCode, ApiErrorResponse Error) MapException(Exception exception)
+    {
+        return exception switch
+        {
+            KeyNotFoundException => (
+                HttpStatusCode.NotFound,
+                new ApiErrorResponse
+                {
+                    Code = "NOT_FOUND",
+                    Message = exception.Message
+                }),
+            InsufficientBalanceException => (
+                HttpStatusCode.BadRequest,
+                new ApiErrorResponse
+                {
+                    Code = "INSUFFICIENT_BALANCE",
+                    Message = exception.Message
+                }),
+            ArgumentException => (
+                HttpStatusCode.BadRequest,
+                new ApiErrorResponse
+                {
+                    Code = "INVALID_ARGUMENT",
+                    Message = exception.Message
+                }),
+            _ => (
+                HttpStatusCode.InternalServerError,
+                new ApiErrorResponse
+                {
+                    Code = "INTERNAL_ERROR",
+                    Message = "Unexpected server error occurred."
+                })
+        };
     }
 }
